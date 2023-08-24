@@ -7,6 +7,7 @@ public class Bird : MonoBehaviour
 {
     private PlayManager playManager;
     private Rigidbody2D myRigidbody;
+    private SpriteRenderer spriteRenderer;
 
     [SerializeField] private float flapVelocity;
     private float flapDelay;
@@ -15,10 +16,12 @@ public class Bird : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        myRigidbody = gameObject.GetComponent<Rigidbody2D>();
+        myRigidbody = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         flapDelay = 2f * flapVelocity / (9.81f * myRigidbody.gravityScale);
         timer = flapDelay * 0.5f;
         playManager = GameObject.Find("PlayManager").GetComponent<PlayManager>();
+        updateColor(new Color(1f, 1f, 1f, 1f)); //Set color to white
     }
 
     // Update is called once per frame
@@ -61,7 +64,13 @@ public class Bird : MonoBehaviour
         myRigidbody.position = Vector2.zero;
         myRigidbody.angularVelocity = 0;
         myRigidbody.rotation = 0;
+        updateColor(new Color(1f, 1f, 1f, 1f)); //Set color to white
 
+    }
+
+    public void updateColor(Color newColor)
+    {
+        spriteRenderer.color = newColor; // Fixed the color setting line
     }
 
     private void updateRot()

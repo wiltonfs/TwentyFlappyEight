@@ -110,4 +110,9 @@ public class Tile : MonoBehaviour
 
         }
     }
+
+    public Color getColor()
+    {
+        return background.color;
+    }
 }

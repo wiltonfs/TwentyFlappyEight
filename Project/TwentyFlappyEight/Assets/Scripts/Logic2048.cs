@@ -11,6 +11,7 @@ public class Logic2048 : MonoBehaviour
     [SerializeField] private GameObject tile;
 
     private PlayManager playManager;
+    private Bird bird;
     private bool setup = false;
 
     private int[,] board;
@@ -23,6 +24,7 @@ public class Logic2048 : MonoBehaviour
     void Start()
     {
         playManager = GameObject.Find("PlayManager").GetComponent<PlayManager>();
+        bird = GameObject.Find("Bird").GetComponent<Bird>();
     }
 
     // Update is called once per frame
@@ -40,7 +42,7 @@ public class Logic2048 : MonoBehaviour
             }
 
 
-            if (Input.GetKeyDown(KeyCode.DownArrow))
+            if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
             {
                 if(down())
                 {
@@ -49,7 +51,7 @@ public class Logic2048 : MonoBehaviour
                 
                 displayBoard();
             }
-            else if (Input.GetKeyDown(KeyCode.UpArrow))
+            else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
             {
                 if (up())
                 {
@@ -58,7 +60,7 @@ public class Logic2048 : MonoBehaviour
 
                 displayBoard();
             }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
             {
                 if(left())
                 {
@@ -67,7 +69,7 @@ public class Logic2048 : MonoBehaviour
                 
                 displayBoard();
             }
-            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
             {
                 if(right())
                 {
@@ -114,7 +116,6 @@ public class Logic2048 : MonoBehaviour
 
     private void displayBoard()
     {
-        
         for (int x = 0; x < 4; x++)
         {
             for (int y = 0; y < 4; y++)
@@ -122,6 +123,8 @@ public class Logic2048 : MonoBehaviour
                 tiles[x, y].updateValue(board[x,y]);
             }
         }
+
+        bird.updateColor(getHighestTileColor());
     }
 
     public int getHighestTile()
@@ -138,8 +141,25 @@ public class Logic2048 : MonoBehaviour
                 }
             }
         }
-
         return highestTile;
+    }
+
+    public Color getHighestTileColor()
+    {
+        int highestTile = getHighestTile();
+        Color highestColor = new Color(1f, 1f, 1f, 1f);
+
+        for (int x = 0; x < 4; x++)
+        {
+            for (int y = 0; y < 4; y++)
+            {
+                if (board[x, y] == highestTile)
+                {
+                    highestColor = tiles[x, y].getColor();
+                }
+            }
+        }
+        return highestColor;
 
     }
 
@@ -198,7 +218,6 @@ public class Logic2048 : MonoBehaviour
     private bool down()
     {
         bool ret = false;
-        //int[,] oldBoard = copy(board);
 
         for (int x = 0; x < 4; x++)
         {
@@ -243,8 +262,6 @@ public class Logic2048 : MonoBehaviour
                 }
             }
         }
-
-        //return !checkEquality(oldBoard, board);
         return ret;
     }
 
@@ -284,7 +301,7 @@ public class Logic2048 : MonoBehaviour
 
     }
 
-    private bool checkEquality(int[,] arr1, int[,] arr2)
+    private bool checkBoardEquality(int[,] arr1, int[,] arr2)
     {
         for (int x = 0; x < 4; x++)
         {
@@ -300,7 +317,7 @@ public class Logic2048 : MonoBehaviour
         return true;
     }
 
-    private int[,] copy(int[,] boardToCopy)
+    private int[,] copyBoard(int[,] boardToCopy)
     {
         int[,] ret = new int[4, 4];
 
